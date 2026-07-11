@@ -1,39 +1,71 @@
 const User = require("../models/User");
+const Product = require("../models/Product");
 
 // Add to Cart
 exports.addToCart = async (req, res) => {
-    const { productId, qty } = req.body;
+    try {
+        const { productId, qty } = req.body;
 
-    const user = await User.findById(req.user._id);
+        if (!productId) {
+            return res.status(400).json({ msg: "Product ID is required" });
+        }
 
-    const itemExists = user.cart.find(
-        (item) => item.product.toString() === productId
-    );
+        const product = await Product.findById(productId);
+        if (!product) {
+            return res.status(404).json({ msg: "Product not found" });
+        }
 
-    if (itemExists) {
-        itemExists.qty += qty;
-    } else {
-        user.cart.push({ product: productId, qty });
+        const qtyNum = Math.max(1, Number(qty) || 1);
+        const stock = product.stock ?? product.countInStock ?? 0;
+
+        if (stock < qtyNum) {
+            return res.status(400).json({ msg: "Insufficient stock" });
+        }
+
+        const user = await User.findById(req.user._id);
+
+        const itemExists = user.cart.find(
+            (item) => item.product.toString() === productId
+        );
+
+        if (itemExists) {
+            if (itemExists.qty + qtyNum > stock) {
+                return res.status(400).json({ msg: "Insufficient stock" });
+            }
+            itemExists.qty += qtyNum;
+        } else {
+            user.cart.push({ product: productId, qty: qtyNum });
+        }
+
+        await user.save();
+        res.json(user.cart);
+    } catch (error) {
+        res.status(500).json({ msg: error.message });
     }
-
-    await user.save();
-    res.json(user.cart);
 };
 
 // Remove from cart
 exports.removeFromCart = async (req, res) => {
-    const user = await User.findById(req.user._id);
+    try {
+        const user = await User.findById(req.user._id);
 
-    user.cart = user.cart.filter(
-        (item) => item.product.toString() !== req.params.productId
-    );
+        user.cart = user.cart.filter(
+            (item) => item.product.toString() !== req.params.productId
+        );
 
-    await user.save();
-    res.json(user.cart);
+        await user.save();
+        res.json(user.cart);
+    } catch (error) {
+        res.status(500).json({ msg: error.message });
+    }
 };
 
 // Get Cart
 exports.getCart = async (req, res) => {
-    const user = await User.findById(req.user._id).populate("cart.product");
-    res.json(user.cart);
+    try {
+        const user = await User.findById(req.user._id).populate("cart.product");
+        res.json(user.cart);
+    } catch (error) {
+        res.status(500).json({ msg: error.message });
+    }
 };

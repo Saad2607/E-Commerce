@@ -1,75 +1,81 @@
 import { useState, useEffect } from "react";
 import API from "../services/api";
 import toast from "react-hot-toast";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { updateUser } from "../features/authSlice";
+import PageLayout from "../components/PageLayout";
 
 const EditProfile = () => {
-    const [form, setForm] = useState({
-        name: "",
-        email: "",
-        password: "",
-    });
+    const [form, setForm] = useState({ name: "", email: "", password: "" });
     const dispatch = useDispatch();
+    const { user } = useSelector((state) => state.auth);
 
     useEffect(() => {
-        const user = JSON.parse(localStorage.getItem("user"));
         if (user) {
-            setForm({ ...form, name: user.name, email: user.email });
+            setForm({ name: user.name, email: user.email, password: "" });
         }
-    }, []);
+    }, [user]);
 
     const updateProfile = async () => {
         try {
-            const user = JSON.parse(localStorage.getItem("user"));
-            
-            const { data } = await API.put("/auth/profile", form, {
-                headers: {
-                    Authorization: `Bearer ${user.token}`,
-                },
-            });
+            const payload = { name: form.name, email: form.email };
+            if (form.password) payload.password = form.password;
 
-            dispatch(updateUser(data));
-
+            const { data } = await API.put("/auth/profile", payload);
+            dispatch(updateUser({ ...data, isAdmin: data.isAdmin ?? user?.isAdmin }));
             toast.success("Profile updated ✅");
         } catch (error) {
-            console.log(error.response?.data);
-            toast.error(error.response?.data?.msg || "Error updating profile ❌");
+            toast.error(error.response?.data?.msg || "Error updating profile");
         }
     };
 
     return (
-        <div className="max-w-xl mx-auto mt-4 p-6 bg-white dark:bg-gray-800 rounded shadow">
-            <h1 className="text-2xl font-bold mb-4">Edit Profile</h1>
+        <PageLayout title="Edit Profile" subtitle="Update your account details">
+            <div className="max-w-lg">
+                <div className="qk-card p-6 space-y-4">
+                    <div>
+                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">
+                            Name
+                        </label>
+                        <input
+                            value={form.name}
+                            onChange={(e) => setForm({ ...form, name: e.target.value })}
+                            className="qk-input"
+                            placeholder="Your name"
+                        />
+                    </div>
 
-            <input
-                value={form.name}
-                onChange={(e) => setForm({ ...form, name: e.target.value })}
-                className="w-full border p-2 mb-3 text-black rounded"
-                placeholder="Name"
-            />
+                    <div>
+                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">
+                            Email
+                        </label>
+                        <input
+                            value={form.email}
+                            onChange={(e) => setForm({ ...form, email: e.target.value })}
+                            className="qk-input"
+                            placeholder="you@example.com"
+                        />
+                    </div>
 
-            <input
-                value={form.email}
-                onChange={(e) => setForm({ ...form, email: e.target.value })}
-                className="w-full border p-2 mb-3 text-black rounded"
-                placeholder="Email"
-            />
+                    <div>
+                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">
+                            New Password
+                        </label>
+                        <input
+                            type="password"
+                            value={form.password}
+                            onChange={(e) => setForm({ ...form, password: e.target.value })}
+                            className="qk-input"
+                            placeholder="Leave blank to keep current password"
+                        />
+                    </div>
 
-            <input
-                type="password"
-                onChange={(e) => setForm({ ...form, password: e.target.value })}
-                className="w-full border p-2 mb-3 text-black rounded"
-                placeholder="New Password"
-            />
-
-            <button
-                onClick={updateProfile}
-                className="bg-yellow-500 w-full py-3 rounded"
-            >
-                Update Profile
-            </button>
-        </div>
+                    <button onClick={updateProfile} className="qk-btn-primary w-full py-3">
+                        Save Changes
+                    </button>
+                </div>
+            </div>
+        </PageLayout>
     );
 };
 

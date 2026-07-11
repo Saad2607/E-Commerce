@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 
-const {createOrder, getMyOrders, getAllOrders, updateOrderStatus, getAdminStats} = require("../controllers/orderController");
+const {createOrder, getMyOrders, getAllOrders, updateOrderStatus, getAdminStats, getOrderInvoice} = require("../controllers/orderController");
 
 const protect = require("../middleware/authMiddleware");
 const admin = require("../middleware/adminMiddleware");
@@ -10,10 +10,11 @@ const admin = require("../middleware/adminMiddleware");
 router.post("/", protect, createOrder);
 router.get("/my", protect, getMyOrders);
 
-// Admin
+// Admin (specific paths before /:id routes)
+router.get("/admin/stats", protect, admin, getAdminStats);
 router.get("/", protect, admin, getAllOrders);
 router.put("/:id", protect, admin, updateOrderStatus);
 
-router.get("/admin/stats", protect, admin, getAdminStats);
+router.get("/:id/invoice", protect, getOrderInvoice);
 
 module.exports = router;

@@ -23,6 +23,8 @@ const orderSchema = new mongoose.Schema(
 
         paymentMethod: String,
 
+        razorpayOrderId: String,
+
         totalPrice: Number,
 
         isPaid: { type: Boolean, default: false },
