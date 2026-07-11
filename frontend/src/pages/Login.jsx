@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import API from "../services/api";
 import { useNavigate, useLocation } from "react-router-dom";
-import toast from "react-hot-toast";
+import { showSuccess, showError } from "../utils/toast";
 import { useDispatch } from "react-redux";
 import { loginSuccess } from "../features/authSlice";
 import AuthCard from "../components/AuthCard";
@@ -21,7 +21,7 @@ const Login = () => {
     useEffect(() => {
         const params = new URLSearchParams(window.location.search);
         if (params.get("session") === "expired") {
-            toast.error("Session expired. Please login again.");
+            showError("Session expired. Please login again.");
         }
     }, []);
 
@@ -29,14 +29,14 @@ const Login = () => {
         e.preventDefault();
 
         if (!form.email || !form.password) {
-            return toast.error("Please fill all fields ❌");
+            return showError("Please fill all fields ❌");
         }
 
         setLoading(true);
         try {
             const { data } = await API.post("/auth/login", form);
             dispatch(loginSuccess(data));
-            toast.success("Login Successful ✅");
+            showSuccess("Login Successful ✅");
 
             if (data.isAdmin) {
                 navigate("/admin");
@@ -44,7 +44,7 @@ const Login = () => {
                 navigate(location.state?.from || "/");
             }
         } catch (err) {
-            toast.error(err.response?.data?.msg || "Invalid credentials ❌");
+            showError(err.response?.data?.msg || "Invalid credentials ❌");
         } finally {
             setLoading(false);
         }

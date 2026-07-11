@@ -1,6 +1,6 @@
 import { useEffect, useState, useRef } from "react";
 import API from "../services/api";
-import toast from "react-hot-toast";
+import { showSuccess, showError } from "../utils/toast";
 import { useNavigate } from "react-router-dom";
 import { getStoredUser } from "../utils/getStoredUser";
 import PageLayout from "../components/PageLayout";
@@ -19,7 +19,7 @@ const Checkout = () => {
                 const { data } = await API.get("/cart");
                 setCart(data);
             } catch (err) {
-                toast.error(err.response?.data?.msg || "Failed to load cart");
+                showError(err.response?.data?.msg || "Failed to load cart");
             }
         };
         fetchCart();
@@ -32,13 +32,13 @@ const Checkout = () => {
 
     const placeOrder = async () => {
         if (submittingRef.current) return;
-        if (!address) return toast.error("Please enter shipping address ❌");
-        if (cart.length === 0) return toast.error("Your cart is empty ❌");
+        if (!address) return showError("Please enter shipping address ❌");
+        if (cart.length === 0) return showError("Your cart is empty ❌");
         if (!import.meta.env.VITE_RAZORPAY_KEY_ID) {
-            return toast.error("Razorpay Key ID missing in frontend .env ❌");
+            return showError("Razorpay Key ID missing in frontend .env ❌");
         }
         if (!window.Razorpay) {
-            return toast.error("Razorpay script failed to load. Refresh the page ❌");
+            return showError("Razorpay script failed to load. Refresh the page ❌");
         }
 
         submittingRef.current = true;
@@ -80,10 +80,10 @@ const Checkout = () => {
                             razorpay_payment_id: response.razorpay_payment_id,
                             razorpay_signature: response.razorpay_signature,
                         });
-                        toast.success("Payment Successful ✅");
+                        showSuccess("Payment Successful ✅");
                         navigate("/order-success", { state: { paid: true, orderId: order._id } });
                     } catch (err) {
-                        toast.error(
+                        showError(
                             err.response?.data?.msg ||
                                 "Payment verification failed. Check My Orders or contact support."
                         );
@@ -98,7 +98,7 @@ const Checkout = () => {
 
             const rzp = new window.Razorpay(options);
             rzp.on("payment.failed", () => {
-                toast.error("Payment Failed ❌");
+                showError("Payment Failed ❌");
                 setLoading(false);
                 submittingRef.current = false;
             });
@@ -108,7 +108,7 @@ const Checkout = () => {
             });
             rzp.open();
         } catch (err) {
-            toast.error(
+            showError(
                 err.response?.data?.msg ||
                     err.response?.data?.message ||
                     err.message ||

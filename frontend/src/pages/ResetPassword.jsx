@@ -2,7 +2,7 @@ import { useState } from "react";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import API from "../services/api";
 import { useNavigate, useParams } from "react-router-dom";
-import toast from "react-hot-toast";
+import { showSuccess, showError } from "../utils/toast";
 import AuthCard from "../components/AuthCard";
 
 const inputClass =
@@ -21,22 +21,22 @@ const ResetPassword = () => {
         e.preventDefault();
 
         if (!password || !confirmPassword) {
-            return toast.error("Please fill all fields ❌");
+            return showError("Please fill all fields ❌");
         }
         if (password.length < 6) {
-            return toast.error("Password must be at least 6 characters ❌");
+            return showError("Password must be at least 6 characters ❌");
         }
         if (password !== confirmPassword) {
-            return toast.error("Passwords do not match ❌");
+            return showError("Passwords do not match ❌");
         }
 
         setLoading(true);
         try {
             await API.put(`/auth/reset-password/${token}`, { password });
-            toast.success("Password reset successful ✅");
+            showSuccess("Password reset successful ✅");
             navigate("/login");
         } catch (err) {
-            toast.error(err.response?.data?.msg || "Reset failed ❌");
+            showError(err.response?.data?.msg || "Reset failed ❌");
         } finally {
             setLoading(false);
         }

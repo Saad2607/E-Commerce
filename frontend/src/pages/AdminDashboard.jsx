@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import API from "../services/api";
-import toast from "react-hot-toast";
+import { showSuccess, showError } from "../utils/toast";
 import { BarChart, Bar, XAxis, YAxis, Tooltip, CartesianGrid, ResponsiveContainer } from "recharts";
 import { FaBox, FaClipboardList, FaRupeeSign, FaUsers } from "react-icons/fa";
 import AdminLayout from "../components/AdminLayout";
@@ -27,7 +27,7 @@ const AdminDashboard = () => {
             const { data } = await API.get("/products");
             setProducts(data);
         } catch {
-            toast.error("Failed to load products");
+            showError("Failed to load products");
         }
     };
 
@@ -64,32 +64,32 @@ const AdminDashboard = () => {
                 stock: product.stock,
             });
 
-            toast.success("Product Added ✅");
+            showSuccess("Product Added ✅");
             resetForm();
             fetchProducts();
         } catch (err) {
-            toast.error(err.response?.data?.msg || "Error adding product ❌");
+            showError(err.response?.data?.msg || "Error adding product ❌");
         }
     };
 
     const deleteProduct = async (id) => {
         try {
             await API.delete(`/products/${id}`);
-            toast.success("Product Deleted ✅");
+            showSuccess("Product Deleted ✅");
             fetchProducts();
         } catch (err) {
-            toast.error(err.response?.data?.msg || "Delete failed ❌");
+            showError(err.response?.data?.msg || "Delete failed ❌");
         }
     };
 
     const updateProduct = async () => {
         try {
             await API.put(`/products/${editId}`, product);
-            toast.success("Product Updated ✅");
+            showSuccess("Product Updated ✅");
             resetForm();
             fetchProducts();
         } catch (err) {
-            toast.error(err.response?.data?.msg || "Update failed ❌");
+            showError(err.response?.data?.msg || "Update failed ❌");
         }
     };
 
@@ -99,7 +99,7 @@ const AdminDashboard = () => {
                 const res = await API.get("/admin");
                 setData(res.data);
             } catch {
-                toast.error("Failed to load dashboard stats");
+                showError("Failed to load dashboard stats");
             }
         };
         fetchData();

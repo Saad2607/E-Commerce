@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import API from "../services/api";
-import toast from "react-hot-toast";
+import { showSuccess, showError } from "../utils/toast";
 import { useNavigate } from "react-router-dom";
 import PageLayout from "../components/PageLayout";
 import { FaTrash } from "react-icons/fa";
@@ -15,7 +15,7 @@ const Cart = () => {
             const { data } = await API.get("/cart");
             setCart(data);
         } catch (err) {
-            toast.error(err.response?.data?.msg || "Failed to load cart");
+            showError(err.response?.data?.msg || "Failed to load cart");
         } finally {
             setLoading(false);
         }
@@ -28,10 +28,10 @@ const Cart = () => {
     const removeItem = async (id) => {
         try {
             await API.delete(`/cart/${id}`);
-            toast.success("Item removed");
+            showSuccess("Item removed");
             fetchCart();
         } catch (err) {
-            toast.error(err.response?.data?.msg || "Failed to remove item");
+            showError(err.response?.data?.msg || "Failed to remove item");
         }
     };
 

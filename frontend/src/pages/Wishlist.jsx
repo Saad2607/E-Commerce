@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import API from "../services/api";
-import toast from "react-hot-toast";
+import { showSuccess, showError } from "../utils/toast";
 import PageLayout from "../components/PageLayout";
 import { FaHeart, FaTrash } from "react-icons/fa";
 
@@ -15,7 +15,7 @@ const Wishlist = () => {
             const { data } = await API.get("/wishlist");
             setItems(data);
         } catch (err) {
-            toast.error(err.response?.data?.msg || "Failed to load wishlist");
+            showError(err.response?.data?.msg || "Failed to load wishlist");
         } finally {
             setLoading(false);
         }
@@ -24,10 +24,10 @@ const Wishlist = () => {
     const removeFromWishlist = async (id) => {
         try {
             await API.delete(`/wishlist/${id}`);
-            toast.success("Removed from wishlist");
+            showSuccess("Removed from wishlist");
             fetchWishlist();
         } catch (err) {
-            toast.error(err.response?.data?.msg || "Failed to remove item");
+            showError(err.response?.data?.msg || "Failed to remove item");
         }
     };
 

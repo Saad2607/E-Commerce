@@ -9,7 +9,16 @@ import { LoaderProvider } from './context/LoaderContext'
 
 createRoot(document.getElementById('root')).render(
   <>
-    <Toaster />
+    <Toaster
+      position="top-center"
+      reverseOrder={false}
+      gutter={10}
+      containerClassName="!top-20"
+      toastOptions={{
+        duration: 3500,
+        className: "!text-sm !font-medium",
+      }}
+    />
     <Provider store={store}>
       <LoaderProvider>
         <App />

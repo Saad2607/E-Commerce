@@ -2,7 +2,7 @@ import { FaHeart, FaShoppingCart } from "react-icons/fa";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import API from "../services/api";
-import toast from "react-hot-toast";
+import { showSuccess, showError } from "../utils/toast";
 
 const ProductCard = ({ product }) => {
     const navigate = useNavigate();
@@ -11,24 +11,24 @@ const ProductCard = ({ product }) => {
 
     const addToCart = async (e) => {
         e.stopPropagation();
-        if (!user) return toast.error("Login required");
-        if (!inStock) return toast.error("Out of stock");
+        if (!user) return showError("Login required");
+        if (!inStock) return showError("Out of stock");
         try {
             await API.post("/cart", { productId: product._id, qty: 1 });
-            toast.success("Added to cart 🛒");
+            showSuccess("Added to cart 🛒");
         } catch (error) {
-            toast.error(error.response?.data?.msg || "Could not add to cart");
+            showError(error.response?.data?.msg || "Could not add to cart");
         }
     };
 
     const addToWishlist = async (e) => {
         e.stopPropagation();
-        if (!user) return toast.error("Login required");
+        if (!user) return showError("Login required");
         try {
             await API.post("/wishlist", { productId: product._id });
-            toast.success("Added to wishlist ❤️");
+            showSuccess("Added to wishlist ❤️");
         } catch (error) {
-            toast.error(error.response?.data?.msg || "Could not add to wishlist");
+            showError(error.response?.data?.msg || "Could not add to wishlist");
         }
     };
 

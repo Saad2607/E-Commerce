@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import API from "../services/api";
-import toast from "react-hot-toast";
+import { showSuccess, showError } from "../utils/toast";
 import { useDispatch, useSelector } from "react-redux";
 import { updateUser } from "../features/authSlice";
 import PageLayout from "../components/PageLayout";
@@ -23,9 +23,9 @@ const EditProfile = () => {
 
             const { data } = await API.put("/auth/profile", payload);
             dispatch(updateUser({ ...data, isAdmin: data.isAdmin ?? user?.isAdmin }));
-            toast.success("Profile updated ✅");
+            showSuccess("Profile updated ✅");
         } catch (error) {
-            toast.error(error.response?.data?.msg || "Error updating profile");
+            showError(error.response?.data?.msg || "Error updating profile");
         }
     };
 

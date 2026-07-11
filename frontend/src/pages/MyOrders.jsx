@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import API from "../services/api";
-import toast from "react-hot-toast";
+import { showSuccess, showError } from "../utils/toast";
 import PageLayout from "../components/PageLayout";
 
 const statusColors = {
@@ -30,7 +30,7 @@ const MyOrders = () => {
             const { data } = await API.get("/orders/my");
             setOrders(data);
         } catch {
-            toast.error("Failed to load orders");
+            showError("Failed to load orders");
         } finally {
             setLoading(false);
         }
@@ -71,7 +71,7 @@ const MyOrders = () => {
             link.remove();
             window.URL.revokeObjectURL(url);
 
-            toast.success("Invoice downloaded");
+            showSuccess("Invoice downloaded");
         } catch (err) {
             let message = "Could not download invoice";
             const data = err.response?.data;
@@ -88,7 +88,7 @@ const MyOrders = () => {
             } else if (err.message) {
                 message = err.message;
             }
-            toast.error(message);
+            showError(message);
         } finally {
             setDownloadingId(null);
         }

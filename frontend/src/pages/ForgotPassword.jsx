@@ -1,7 +1,7 @@
 import { useState } from "react";
 import API from "../services/api";
 import { useNavigate } from "react-router-dom";
-import toast from "react-hot-toast";
+import { showSuccess, showError } from "../utils/toast";
 import AuthCard from "../components/AuthCard";
 
 const inputClass =
@@ -16,13 +16,13 @@ const ForgotPassword = () => {
         e.preventDefault();
 
         if (!email) {
-            return toast.error("Please enter your email ❌");
+            return showError("Please enter your email ❌");
         }
 
         setLoading(true);
         try {
             const { data } = await API.post("/auth/forgot-password", { email });
-            toast.success(data.msg);
+            showSuccess(data.msg);
             navigate("/login");
         } catch (err) {
             const message =
@@ -30,7 +30,7 @@ const ForgotPassword = () => {
                 err.response?.statusText ||
                 err.message ||
                 "Something went wrong ❌";
-            toast.error(message);
+            showError(message);
         } finally {
             setLoading(false);
         }

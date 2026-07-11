@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import API from "../services/api";
-import toast from "react-hot-toast";
+import { showSuccess, showError } from "../utils/toast";
 import { FaStar, FaShoppingCart, FaArrowLeft } from "react-icons/fa";
 import PageLayout from "../components/PageLayout";
 
@@ -40,32 +40,32 @@ const ProductDetails = () => {
     const addToCart = async () => {
         try {
             await API.post("/cart", { productId: product._id, qty: 1 });
-            toast.success("Added to cart 🛒");
+            showSuccess("Added to cart 🛒");
         } catch (err) {
-            toast.error(err.response?.status === 401 ? "Login required" : err.response?.data?.msg || "Could not add to cart");
+            showError(err.response?.status === 401 ? "Login required" : err.response?.data?.msg || "Could not add to cart");
         }
     };
 
     const submitReview = async () => {
-        if (rating === 0) return toast.error("Please select rating ⭐");
+        if (rating === 0) return showError("Please select rating ⭐");
         try {
             await API.post(`/products/${id}/reviews`, { comment, rating });
-            toast.success("Review added ⭐");
+            showSuccess("Review added ⭐");
             setComment("");
             setRating(0);
             fetchProduct();
         } catch (err) {
-            toast.error(err.response?.data?.msg || "Error adding review");
+            showError(err.response?.data?.msg || "Error adding review");
         }
     };
 
     const deleteReview = async () => {
         try {
             await API.delete(`/products/${id}/reviews`);
-            toast.success("Review removed");
+            showSuccess("Review removed");
             fetchProduct();
         } catch (error) {
-            toast.error(error.response?.data?.msg || "Error deleting review");
+            showError(error.response?.data?.msg || "Error deleting review");
         }
     };
 

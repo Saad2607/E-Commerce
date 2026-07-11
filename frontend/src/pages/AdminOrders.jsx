@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import API from "../services/api";
-import toast from "react-hot-toast";
+import { showSuccess, showError } from "../utils/toast";
 import AdminLayout from "../components/AdminLayout";
 import { FaBox, FaUser, FaRupeeSign } from "react-icons/fa";
 
@@ -21,7 +21,7 @@ const AdminOrders = () => {
             const { data } = await API.get("/orders");
             setOrders(data);
         } catch {
-            toast.error("Failed to load orders");
+            showError("Failed to load orders");
         } finally {
             setLoading(false);
         }
@@ -30,10 +30,10 @@ const AdminOrders = () => {
     const updateStatus = async (id, status) => {
         try {
             await API.put(`/orders/${id}`, { status });
-            toast.success("Status updated ✅");
+            showSuccess("Status updated ✅");
             fetchOrders();
         } catch {
-            toast.error("Error updating status");
+            showError("Error updating status");
         }
     };
 

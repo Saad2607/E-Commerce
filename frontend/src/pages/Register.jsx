@@ -2,7 +2,7 @@ import { useState } from "react";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import API from "../services/api";
 import { useNavigate } from "react-router-dom";
-import toast from "react-hot-toast";
+import { showSuccess, showError } from "../utils/toast";
 import AuthCard from "../components/AuthCard";
 
 const inputClass =
@@ -18,19 +18,19 @@ const Register = () => {
         e.preventDefault();
 
         if (!form.name || !form.email || !form.password) {
-            return toast.error("Please fill all fields ❌");
+            return showError("Please fill all fields ❌");
         }
         if (form.password.length < 6) {
-            return toast.error("Password must be at least 6 characters ❌");
+            return showError("Password must be at least 6 characters ❌");
         }
 
         setLoading(true);
         try {
             await API.post("/auth/register", form);
-            toast.success("Registered Successfully 🎉");
+            showSuccess("Registered Successfully 🎉");
             navigate("/login");
         } catch (err) {
-            toast.error(err.response?.data?.msg || "Error registering ❌");
+            showError(err.response?.data?.msg || "Error registering ❌");
         } finally {
             setLoading(false);
         }
