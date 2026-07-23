@@ -1,30 +1,48 @@
 const nodemailer = require("nodemailer");
 
-const sendEmail = async (to, subject, html, attachments = []) => {
-    try {
-        const transporter = nodemailer.createTransport({
-            service: "gmail",
-            auth: {
-                user: process.env.EMAIL_USER,
-                pass: process.env.EMAIL_PASS,
-            },
-        });
+const getEmailConfig = () => {
+    const user = process.env.EMAIL_USER?.trim();
+    // Gmail app passwords are 16 chars — remove spaces if copied with gaps
+    const pass = process.env.EMAIL_PASS?.trim().replace(/\s+/g, "");
 
-        const mailOptions = {
-            from: process.env.EMAIL_USER,
-            to,
-            subject,
-            html,
-            attachments,
-        };
-
-        await transporter.sendMail(mailOptions);
-        console.log("Email Sent Successfully");
-        return true;
-    } catch (error) {
-        console.error("Email send failed:", error.message);
-        throw error;
+    if (!user || !pass) {
+        throw new Error("EMAIL_USER and EMAIL_PASS must be set in backend .env");
     }
+
+    return { user, pass };
+};
+
+const createTransporter = () => {
+    const { user, pass } = getEmailConfig();
+
+    return nodemailer.createTransport({
+        host: "smtp.gmail.com",
+        port: 587,
+        secure: false,
+        auth: { user, pass },
+        tls: { rejectUnauthorized: true },
+    });
+};
+
+const sendEmail = async (to, subject, html, attachments = []) => {
+    const { user } = getEmailConfig();
+
+    const transporter = createTransporter();
+
+    // Verify SMTP connection before sending
+    await transporter.verify();
+
+    const mailOptions = {
+        from: `"QuickKart" <${user}>`,
+        to,
+        subject,
+        html,
+        attachments,
+    };
+
+    const info = await transporter.sendMail(mailOptions);
+    console.log(`Email sent to ${to} — messageId: ${info.messageId}`);
+    return true;
 };
 
 module.exports = sendEmail;

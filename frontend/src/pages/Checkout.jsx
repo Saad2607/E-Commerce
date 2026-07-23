@@ -74,13 +74,18 @@ const Checkout = () => {
                 order_id: paymentData.razorpayOrderId,
                 handler: async (response) => {
                     try {
-                        await API.post("/payment/verify", {
+                        const { data } = await API.post("/payment/verify", {
                             orderId: order._id,
                             razorpay_order_id: response.razorpay_order_id,
                             razorpay_payment_id: response.razorpay_payment_id,
                             razorpay_signature: response.razorpay_signature,
                         });
                         showSuccess("Payment Successful ✅");
+                        if (data.emailSent === false) {
+                            showError(
+                                "Payment done, but confirmation email could not be sent. Check spam or contact support."
+                            );
+                        }
                         navigate("/order-success", { state: { paid: true, orderId: order._id } });
                     } catch (err) {
                         showError(

@@ -143,19 +143,42 @@ exports.verifyPayment = async (req, res) => {
         user.cart = [];
         await user.save();
 
+        let emailSent = false;
+        let emailError = null;
+
         try {
-            const pdfBuffer = await generateInvoice(order, user);
+            const attachments = [];
+            try {
+                const pdfBuffer = await generateInvoice(order, user);
+                attachments.push({
+                    filename: `QuickKart-Invoice-${order._id}.pdf`,
+                    content: pdfBuffer,
+                });
+            } catch (pdfErr) {
+                console.error("Invoice PDF generation failed:", pdfErr.message);
+            }
+
             await sendEmail(
                 user.email,
-                "Order Confirmation 🛒 — QuickKart",
+                "Order Confirmation — QuickKart",
                 orderTemplate(order, user, razorpay_payment_id),
-                [{ filename: `QuickKart-Invoice-${order._id}.pdf`, content: pdfBuffer }]
+                attachments
             );
-        } catch (emailErr) {
-            console.error("Order confirmation email failed:", emailErr.message);
+            emailSent = true;
+        } catch (err) {
+            emailError = err.message;
+            console.error("Order confirmation email failed:", err.message);
+            if (err.response) {
+                console.error("SMTP response:", err.response);
+            }
         }
 
-        res.json({ msg: "Payment verified", order });
+        res.json({
+            msg: "Payment verified",
+            order,
+            emailSent,
+            ...(emailError && { emailError }),
+        });
     } catch (error) {
         res.status(500).json({ msg: error.message });
     }
