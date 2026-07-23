@@ -6,6 +6,6 @@ const { uploadImage } = require("../controllers/uploadController");
 const protect = require("../middleware/authMiddleware");
 const admin = require("../middleware/adminMiddleware");
 
-router.post("/", protect, admin, upload.single("images"), uploadImage);
+router.post("/", protect, admin, upload.array("images"), uploadImage);
 
 module.exports = router;

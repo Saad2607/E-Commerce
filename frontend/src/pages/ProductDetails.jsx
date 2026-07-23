@@ -142,7 +142,7 @@ const ProductDetails = () => {
                     </div>
 
                     <p className="text-3xl font-bold text-gray-900 dark:text-white mt-4">
-                        ₹{product.price}
+                        ₹{product.price?.toLocaleString("en-IN")}
                     </p>
 
                     <p className="mt-4 text-gray-600 dark:text-gray-300 leading-relaxed">
