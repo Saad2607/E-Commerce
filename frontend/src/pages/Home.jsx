@@ -72,7 +72,7 @@ const Home = ({ search }) => {
                         <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-yellow-500/20 text-yellow-400 text-sm font-medium mb-4 border border-yellow-500/30">
                             ✨ Welcome to QuickKart
                         </span>
-                        <h1 className="text-3xl sm:text-5xl font-bold leading-tight">
+                        <h1 className="text-3xl text-black sm:text-5xl font-bold leading-tight">
                             Shop Smarter,
                             <span className="text-yellow-400"> Live Better</span>
                         </h1>
@@ -89,7 +89,7 @@ const Home = ({ search }) => {
                             {!user && (
                                 <button
                                     onClick={() => navigate("/register")}
-                                    className="px-6 py-3 rounded-lg border border-gray-600 hover:border-yellow-400 hover:text-yellow-400 transition font-semibold"
+                                    className="px-6 py-3 rounded-lg border text-yellow-400 border-gray-600 hover:border-yellow-400 hover:text-yellow-400 transition font-semibold"
                                 >
                                     Create Account
                                 </button>
