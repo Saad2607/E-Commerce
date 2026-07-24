@@ -70,13 +70,13 @@ const Home = ({ search }) => {
                 <div className="relative max-w-6xl mx-auto px-4 sm:px-6 py-14 sm:py-20">
                     <div className="max-w-2xl animate-slide-up">
                         <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-yellow-500/20 text-yellow-400 text-sm font-medium mb-4 border border-yellow-500/30">
-                            ✨ Welcome to QuickKart
+                            Welcome to QuickKart
                         </span>
-                        <h1 className="text-3xl text-black sm:text-5xl font-bold leading-tight">
+                        <h1 className="text-3xl text-black sm:text-5xl font-bold leading-tight dark:text-white">
                             Shop Smarter,
                             <span className="text-yellow-400"> Live Better</span>
                         </h1>
-                        <p className="mt-4 text-gray-300 text-lg max-w-lg">
+                        <p className="mt-4 text-gray-600 text-lg max-w-lg dark:text-gray-300">
                             Premium products at great prices — electronics, fashion, and more with secure Razorpay checkout.
                         </p>
                         <div className="flex flex-wrap gap-3 mt-8">
@@ -134,7 +134,7 @@ const Home = ({ search }) => {
                         onChange={(e) => setSortBy(e.target.value)}
                         className="qk-input w-full sm:w-auto sm:min-w-[160px] text-sm py-2"
                     >
-                        <option value="default">Sort: Default</option>
+                        <option value="default">Sort by: Default</option>
                         <option value="price-low">Price: Low to High</option>
                         <option value="price-high">Price: High to Low</option>
                         <option value="rating">Top Rated</option>
