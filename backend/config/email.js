@@ -30,7 +30,7 @@ const sendEmail = async (to, subject, html, attachments = []) => {
     const transporter = createTransporter();
 
     // Verify SMTP connection before sending
-    await transporter.verify();
+    // await transporter.verify();
 
     const mailOptions = {
         from: `"QuickKart" <${user}>`,
