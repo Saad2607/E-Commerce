@@ -21,6 +21,7 @@ const createTransporter = () => {
         secure: false,
         auth: { user, pass },
         tls: { rejectUnauthorized: true },
+        family: 4,
     });
 };
 
