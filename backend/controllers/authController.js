@@ -357,6 +357,9 @@ exports.requestOtpLogin = async (req, res) => {
                 if (emailErr.statusCode === 429) {
                     return res.status(429).json({ msg: emailErr.message, cooldownRemaining: emailErr.cooldownRemaining });
                 }
+                return res.status(502).json({
+                    msg: `Could not send login code: ${emailErr.message}`,
+                });
             }
         }
 
@@ -462,6 +465,9 @@ exports.forgotPassword = async (req, res) => {
                 if (emailErr.statusCode === 429) {
                     return res.status(429).json({ msg: emailErr.message, cooldownRemaining: emailErr.cooldownRemaining });
                 }
+                return res.status(502).json({
+                    msg: `Could not send password reset code: ${emailErr.message}`,
+                });
             }
         }
 

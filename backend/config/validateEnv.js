@@ -8,11 +8,10 @@ const validateEnv = () => {
         process.exit(1);
     }
 
-    const hasResend = Boolean(process.env.RESEND_API_KEY || process.env.EMAIL_API_KEY);
     const hasSmtp = Boolean(process.env.EMAIL_USER && process.env.EMAIL_PASS);
 
-    if (!hasResend && !hasSmtp && process.env.NODE_ENV !== "test") {
-        console.warn("Warning: Neither RESEND_API_KEY nor (EMAIL_USER and EMAIL_PASS) is set — transactional emails will fail");
+    if (!hasSmtp && process.env.NODE_ENV !== "test") {
+        console.warn("Warning: EMAIL_USER and EMAIL_PASS are not configured — transactional emails will fail");
     }
 
     if (!process.env.OTP_HASH_SECRET) {

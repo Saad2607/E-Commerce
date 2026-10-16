@@ -19,11 +19,21 @@ connectDB();
 
 const app = express();
 
-// Trust reverse proxy for accurate IP extraction on Render / cloud deployments
+// Trust reverse proxy for accurate IP extraction on Vercel / Render / cloud deployments
 app.set("trust proxy", 1);
 
 app.use(express.json());
 app.use(cors({ origin: "*" }));
+
+// Ensure database connection is ready for each request (essential for serverless Vercel)
+app.use(async (req, res, next) => {
+    try {
+        await connectDB();
+        next();
+    } catch (err) {
+        next(err);
+    }
+});
 
 app.use("/api/auth", authRoutes);
 app.use("/api/products", productRoutes);
@@ -35,11 +45,16 @@ app.use("/api/wishlist", wishlistRoutes);
 app.use("/api/admin", adminRoutes);
 
 app.get("/", (req, res) => {
-    res.send("E-Commerce API is running...");
+    res.send("QuickKart E-Commerce API is running...");
 });
 
 app.use(notFound);
 app.use(errorHandler);
 
+// Only listen when running standalone (local / Render), not in serverless (Vercel)
 const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+if (!process.env.VERCEL) {
+    app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+}
+
+module.exports = app;

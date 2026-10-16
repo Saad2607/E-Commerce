@@ -10,6 +10,13 @@ import AuthCard from "../components/AuthCard";
 const inputClass =
     "w-full border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:border-transparent transition";
 
+const maskEmail = (email) => {
+    if (!email || !email.includes("@")) return email || "your email";
+    const [name, domain] = email.split("@");
+    if (name.length <= 2) return `${name.charAt(0)}*@${domain}`;
+    return `${name.charAt(0)}${"*".repeat(Math.max(1, name.length - 2))}${name.slice(-1)}@${domain}`;
+};
+
 const Login = () => {
     const [loginMode, setLoginMode] = useState("password"); // "password" | "otp"
     const [form, setForm] = useState({ email: "", password: "" });
@@ -330,7 +337,7 @@ const Login = () => {
             {loginMode === "otp" && otpSent && (
                 <form onSubmit={handleVerifyOtpLogin} className="space-y-5">
                     <p className="text-sm text-gray-600 dark:text-gray-300 text-center">
-                        Enter the 6-digit login code sent to <strong>{otpEmail}</strong>
+                        Enter the 6-digit login code sent to <strong>{maskEmail(otpEmail)}</strong>
                     </p>
 
                     <div className="flex justify-center gap-2 sm:gap-2.5" onPaste={handleOtpPaste}>
