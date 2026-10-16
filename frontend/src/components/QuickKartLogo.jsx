@@ -8,9 +8,9 @@ const QuickKartLogo = () => {
         className="w-8 h-8"
       />
 
-      <span className="text-2xl font-bold">
-        <span className="text-white dark:text-white">Quick</span>
-        <span className="text-yellow-400">Kart</span>
+      <span className="text-2xl font-black tracking-tight">
+        <span className="text-gray-900 dark:text-white transition-colors">Quick</span>
+        <span className="text-amber-500 dark:text-yellow-400">Kart</span>
       </span>
     </div>
   );

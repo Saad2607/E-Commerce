@@ -1,6 +1,6 @@
 const AuthCard = ({ title, subtitle, children, footer }) => {
     return (
-        <div className="min-h-[calc(100vh-64px)] flex items-center justify-center px-4 py-10 bg-gray-50 dark:bg-gray-900 hero-pattern relative overflow-hidden">
+        <div className="min-h-[calc(100vh-64px)] flex items-center justify-center px-4 py-10 bg-gray-50 dark:bg-[#0b0f17] hero-pattern relative overflow-hidden">
             <div className="absolute top-20 left-10 w-72 h-72 bg-yellow-400/10 rounded-full blur-3xl pointer-events-none" />
             <div className="absolute bottom-10 right-10 w-96 h-96 bg-yellow-500/5 rounded-full blur-3xl pointer-events-none" />
 

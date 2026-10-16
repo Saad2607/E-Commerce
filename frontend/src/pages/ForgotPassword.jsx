@@ -22,8 +22,8 @@ const ForgotPassword = () => {
         setLoading(true);
         try {
             const { data } = await API.post("/auth/forgot-password", { email });
-            showSuccess(data.msg);
-            navigate("/login");
+            showSuccess(data.msg || "If an eligible account exists, a reset code was sent 📩");
+            navigate("/verify-reset-otp", { state: { email } });
         } catch (err) {
             const message =
                 err.response?.data?.msg ||
@@ -39,7 +39,7 @@ const ForgotPassword = () => {
     return (
         <AuthCard
             title="Forgot Password"
-            subtitle="Enter your email and we'll send you a reset link"
+            subtitle="Enter your email and we'll send you a 6-digit reset code"
             footer={
                 <>
                     Remember your password?{" "}
@@ -64,15 +64,16 @@ const ForgotPassword = () => {
                         value={email}
                         className={inputClass}
                         onChange={(e) => setEmail(e.target.value)}
+                        required
                     />
                 </div>
 
                 <button
                     type="submit"
                     disabled={loading}
-                    className="qk-btn-primary w-full py-3 shadow-md hover:shadow-lg"
+                    className="qk-btn-primary w-full py-3 shadow-md hover:shadow-lg disabled:opacity-60"
                 >
-                    {loading ? "Sending..." : "Send Reset Link"}
+                    {loading ? "Sending..." : "Send Verification Code"}
                 </button>
             </form>
         </AuthCard>

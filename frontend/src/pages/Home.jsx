@@ -60,97 +60,107 @@ const Home = ({ search }) => {
     }, [products, search, category, sortBy]);
 
     return (
-        <div className="min-h-[calc(100vh-64px)] bg-gray-50 dark:bg-gray-900">
-            <section className="relative bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 text-white overflow-hidden hero-pattern">
-                <div className="absolute inset-0 opacity-10">
-                    <div className="absolute top-10 right-10 w-64 h-64 bg-yellow-500 rounded-full blur-3xl" />
-                    <div className="absolute bottom-0 left-10 w-48 h-48 bg-yellow-400 rounded-full blur-3xl" />
+        <div className="min-h-[calc(100vh-70px)] bg-gray-50 text-gray-900 dark:bg-[#0b0f17] dark:text-gray-100 transition-colors duration-300">
+            {/* Luxury Hero Banner */}
+            <section className="relative overflow-hidden hero-pattern border-b border-gray-200 dark:border-gray-800/80">
+                <div className="absolute inset-0 pointer-events-none">
+                    <div className="absolute -top-24 right-1/4 w-96 h-96 bg-amber-500/10 rounded-full blur-3xl animate-pulse" />
+                    <div className="absolute bottom-0 left-10 w-72 h-72 bg-yellow-400/10 rounded-full blur-3xl" />
                 </div>
 
-                <div className="relative max-w-6xl mx-auto px-4 sm:px-6 py-14 sm:py-20">
-                    <div className="max-w-2xl animate-slide-up">
-                        <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-yellow-500/20 text-yellow-400 text-sm font-medium mb-4 border border-yellow-500/30">
-                            Welcome to QuickKart
+                <div className="relative max-w-7xl mx-auto px-4 sm:px-6 py-16 sm:py-24">
+                    <div className="max-w-3xl animate-slide-up">
+                        <span className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-amber-500/15 text-amber-700 dark:text-amber-300 text-xs font-bold tracking-wider uppercase mb-5 border border-amber-500/30 shadow-sm backdrop-blur-md">
+                            ✨ Luxury Shopping Redefined
                         </span>
-                        <h1 className="text-3xl text-black sm:text-5xl font-bold leading-tight dark:text-white">
+                        <h1 className="text-4xl sm:text-6xl font-black leading-tight text-gray-900 dark:text-white tracking-tight">
                             Shop Smarter,
-                            <span className="text-yellow-400"> Live Better</span>
+                            <span className="gold-gradient-text block sm:inline sm:ml-3">
+                                Live Luxuriously
+                            </span>
                         </h1>
-                        <p className="mt-4 text-gray-600 text-lg max-w-lg dark:text-gray-300">
-                            Premium products at great prices — electronics, fashion, and more with secure Razorpay checkout.
+                        <p className="mt-5 text-gray-600 dark:text-gray-400 text-base sm:text-lg max-w-2xl leading-relaxed">
+                            Discover premium collections across top electronics, designer fashion, and lifestyle essentials with verified security and instant Razorpay checkout.
                         </p>
-                        <div className="flex flex-wrap gap-3 mt-8">
+                        <div className="flex flex-wrap gap-4 mt-8">
                             <button
                                 onClick={() => document.getElementById("products")?.scrollIntoView({ behavior: "smooth" })}
-                                className="qk-btn-primary px-6 py-3"
+                                className="qk-btn-primary px-8 py-3.5 text-sm uppercase tracking-wider"
                             >
-                                Shop Now
+                                Explore Collection
                             </button>
                             {!user && (
                                 <button
                                     onClick={() => navigate("/register")}
-                                    className="px-6 py-3 rounded-lg border text-yellow-400 border-gray-600 hover:border-yellow-400 hover:text-yellow-400 transition font-semibold"
+                                    className="qk-btn-secondary px-7 py-3.5 text-sm font-bold"
                                 >
-                                    Create Account
+                                    Join QuickKart
                                 </button>
                             )}
                         </div>
                     </div>
                 </div>
-                <div className="h-1 bg-gradient-to-r from-transparent via-yellow-500 to-transparent" />
             </section>
 
-            <section className="max-w-6xl mx-auto px-4 sm:px-6 -mt-6 relative z-10">
-                <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+            {/* Trust Badges */}
+            <section className="max-w-7xl mx-auto px-4 sm:px-6 -mt-7 relative z-10">
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
                     {TRUST_BADGES.map(({ icon: Icon, label }) => (
                         <div
                             key={label}
-                            className="qk-card p-4 flex items-center gap-3 animate-fade-in"
+                            className="qk-card p-4.5 flex items-center gap-3.5 border border-amber-500/20 hover:border-amber-500/50 hover:shadow-gold-sm transition-all duration-300"
                         >
-                            <div className="w-10 h-10 rounded-xl bg-yellow-100 dark:bg-yellow-900/30 flex items-center justify-center text-yellow-600 dark:text-yellow-400 shrink-0">
+                            <div className="w-11 h-11 rounded-xl bg-amber-500/15 border border-amber-500/30 flex items-center justify-center text-amber-600 dark:text-amber-400 shrink-0 shadow-sm">
                                 <Icon size={18} />
                             </div>
-                            <span className="text-sm font-medium text-gray-700 dark:text-gray-300">{label}</span>
+                            <span className="text-sm font-bold text-gray-800 dark:text-gray-200">{label}</span>
                         </div>
                     ))}
                 </div>
             </section>
 
-            <section id="products" className="max-w-6xl mx-auto px-4 sm:px-6 py-10 pb-24 md:pb-10">
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
+            {/* Product Catalog Section */}
+            <section id="products" className="max-w-7xl mx-auto px-4 sm:px-6 py-14 pb-24 md:pb-16">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
                     <div>
-                        <h2 className="qk-section-title">
-                            {search ? `Results for "${search}"` : "All Products"}
-                        </h2>
+                        <div className="flex items-center gap-3">
+                            <span className="w-1.5 h-7 rounded-full bg-gradient-to-b from-amber-400 to-amber-600 shadow-[0_0_8px_rgba(245,158,11,0.6)]" />
+                            <h2 className="text-2xl sm:text-3xl font-black text-gray-900 dark:text-white tracking-tight">
+                                {search ? `Results for "${search}"` : "Featured Collections"}
+                            </h2>
+                        </div>
                         {!loading && !error && (
-                            <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
-                                {filteredProducts.length} product{filteredProducts.length !== 1 ? "s" : ""} found
+                            <p className="text-xs text-amber-600 dark:text-amber-400/80 font-mono mt-1.5 pl-4 uppercase tracking-wider">
+                                Showing {filteredProducts.length} premium product{filteredProducts.length !== 1 ? "s" : ""}
                             </p>
                         )}
                     </div>
 
-                    <select
-                        value={sortBy}
-                        onChange={(e) => setSortBy(e.target.value)}
-                        className="qk-input w-full sm:w-auto sm:min-w-[160px] text-sm py-2"
-                    >
-                        <option value="default">Sort by: Default</option>
-                        <option value="price-low">Price: Low to High</option>
-                        <option value="price-high">Price: High to Low</option>
-                        <option value="rating">Top Rated</option>
-                    </select>
+                    <div className="flex items-center gap-3">
+                        <select
+                            value={sortBy}
+                            onChange={(e) => setSortBy(e.target.value)}
+                            className="qk-input w-full sm:w-auto sm:min-w-[180px] text-xs font-semibold py-2.5"
+                        >
+                            <option value="default">Sort: Recommended</option>
+                            <option value="price-low">Price: Low to High</option>
+                            <option value="price-high">Price: High to Low</option>
+                            <option value="rating">Highest Rated</option>
+                        </select>
+                    </div>
                 </div>
 
+                {/* Category Pills */}
                 {categories.length > 1 && (
-                    <div className="flex gap-2 overflow-x-auto pb-4 mb-4 scrollbar-hide">
+                    <div className="flex gap-2.5 overflow-x-auto pb-4 mb-8 scrollbar-hide">
                         {categories.map((cat) => (
                             <button
                                 key={cat}
                                 onClick={() => setCategory(cat)}
-                                className={`shrink-0 px-4 py-2 rounded-full text-sm font-medium transition ${
+                                className={`shrink-0 px-5 py-2.5 rounded-xl text-xs font-bold uppercase tracking-wider transition-all duration-200 ${
                                     category === cat
-                                        ? "bg-yellow-500 text-gray-900 shadow-md"
-                                        : "bg-white dark:bg-gray-800 text-gray-600 dark:text-gray-300 border border-gray-200 dark:border-gray-700 hover:border-yellow-400"
+                                        ? "bg-gradient-to-r from-amber-500 to-yellow-400 text-gray-950 shadow-md shadow-amber-500/20 scale-105"
+                                        : "bg-white dark:bg-[#111827]/90 text-gray-700 dark:text-gray-400 border border-gray-200 dark:border-gray-800 hover:border-amber-500/40 hover:text-amber-600 dark:hover:text-white shadow-sm"
                                 }`}
                             >
                                 {cat}
@@ -159,49 +169,56 @@ const Home = ({ search }) => {
                     </div>
                 )}
 
+                {/* Skeletons Loading */}
                 {loading && (
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
                         {[1, 2, 3, 4, 5, 6, 7, 8].map((i) => (
                             <div key={i} className="qk-card overflow-hidden animate-pulse">
-                                <div className="h-48 bg-gray-200 dark:bg-gray-700" />
+                                <div className="h-52 bg-gray-200 dark:bg-gray-800/60" />
                                 <div className="p-4 space-y-3">
-                                    <div className="h-3 bg-gray-200 dark:bg-gray-700 rounded w-1/3" />
-                                    <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-2/3" />
-                                    <div className="h-8 bg-gray-200 dark:bg-gray-700 rounded" />
+                                    <div className="h-3 bg-gray-200 dark:bg-gray-800 rounded w-1/3" />
+                                    <div className="h-4 bg-gray-200 dark:bg-gray-800 rounded w-2/3" />
+                                    <div className="h-9 bg-gray-200 dark:bg-gray-800 rounded-xl" />
                                 </div>
                             </div>
                         ))}
                     </div>
                 )}
 
+                {/* Error Banner */}
                 {error && (
-                    <div className="qk-card p-12 text-center animate-fade-in">
-                        <p className="text-4xl mb-4">😕</p>
-                        <p className="text-red-500 mb-4">{error}</p>
-                        <button onClick={fetchProducts} className="qk-btn-primary px-6 py-2">
+                    <div className="qk-card p-12 text-center border-red-500/30 animate-fade-in">
+                        <p className="text-4xl mb-3">⚠️</p>
+                        <p className="text-red-500 dark:text-red-400 font-medium mb-4">{error}</p>
+                        <button onClick={fetchProducts} className="qk-btn-primary px-6 py-2.5 text-sm">
                             Retry
                         </button>
                     </div>
                 )}
 
+                {/* Empty State */}
                 {!loading && !error && filteredProducts.length === 0 && (
-                    <div className="qk-card p-12 text-center animate-fade-in">
-                        <p className="text-5xl mb-4">🔍</p>
-                        <p className="text-gray-500 dark:text-gray-400">
+                    <div className="qk-card p-16 text-center border-amber-500/20 animate-fade-in">
+                        <div className="w-16 h-16 rounded-2xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-center mx-auto mb-4 text-amber-500 text-2xl">
+                            🔍
+                        </div>
+                        <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-1">No products found</h3>
+                        <p className="text-gray-500 dark:text-gray-400 text-sm max-w-sm mx-auto">
                             {search || category !== "All"
-                                ? "No products match your filters."
-                                : "No products available yet."}
+                                ? "No items match your active filters. Try searching for something else."
+                                : "We are preparing luxury products for this collection. Please check back soon."}
                         </p>
                     </div>
                 )}
 
+                {/* Products Grid */}
                 {!loading && !error && filteredProducts.length > 0 && (
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
                         {filteredProducts.map((product, i) => (
                             <div
                                 key={product._id}
                                 className="animate-slide-up"
-                                style={{ animationDelay: `${Math.min(i * 50, 300)}ms` }}
+                                style={{ animationDelay: `${Math.min(i * 40, 240)}ms` }}
                             >
                                 <ProductCard product={product} />
                             </div>

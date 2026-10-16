@@ -1,7 +1,24 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" class="dark">
   <head>
     <meta charset="UTF-8" />
+
+    <!-- ⚡ Inline Theme Evaluator (Prevents Flash of Light Mode / FOUC on refresh) -->
+    <script>
+      (function() {
+        try {
+          var saved = localStorage.getItem('qk_theme');
+          var isDark = saved !== null ? saved === 'dark' : true;
+          if (isDark) {
+            document.documentElement.classList.add('dark');
+            document.documentElement.style.colorScheme = 'dark';
+          } else {
+            document.documentElement.classList.remove('dark');
+            document.documentElement.style.colorScheme = 'light';
+          }
+        } catch (e) {}
+      })();
+    </script>
 
     <!-- ✅ LOGO -->
     <link rel="icon" type="image/png" href="/logo.svg" />
@@ -10,7 +27,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
     <!-- ✅ SEO -->
-    <meta name="description" content="QuickKart - Fast and reliable online shopping platform." />
+    <meta name="description" content="QuickKart - Fast and reliable luxury online shopping platform." />
 
     <!-- ✅ BRAND COLOR -->
     <meta name="theme-color" content="#facc15" />

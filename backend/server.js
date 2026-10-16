@@ -19,6 +19,9 @@ connectDB();
 
 const app = express();
 
+// Trust reverse proxy for accurate IP extraction on Render / cloud deployments
+app.set("trust proxy", 1);
+
 app.use(express.json());
 app.use(cors({ origin: "*" }));
 

@@ -99,12 +99,13 @@ exports.getOrderInvoice = async (req, res) => {
     }
 };
 
-// ✅ Admin: Get All Orders
+// ✅ Admin: Get All Orders (sorted newest first)
 exports.getAllOrders = async (req, res) => {
     try {
         const orders = await Order.find()
             .populate("user", "name email")
-            .populate("orderItems.product");
+            .populate("orderItems.product")
+            .sort({ createdAt: -1 });
 
         res.json(orders);
     } catch (error) {

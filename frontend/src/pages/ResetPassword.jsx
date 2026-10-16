@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import API from "../services/api";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams, useLocation } from "react-router-dom";
 import { showSuccess, showError } from "../utils/toast";
 import AuthCard from "../components/AuthCard";
 
@@ -9,8 +9,12 @@ const inputClass =
     "w-full border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:border-transparent transition";
 
 const ResetPassword = () => {
-    const { token } = useParams();
+    const { token: urlToken } = useParams();
+    const location = useLocation();
     const navigate = useNavigate();
+
+    const resetToken = location.state?.resetToken || urlToken;
+
     const [password, setPassword] = useState("");
     const [confirmPassword, setConfirmPassword] = useState("");
     const [showPassword, setShowPassword] = useState(false);
@@ -20,6 +24,9 @@ const ResetPassword = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
 
+        if (!resetToken) {
+            return showError("Missing password reset authorization. Please request a new code. ❌");
+        }
         if (!password || !confirmPassword) {
             return showError("Please fill all fields ❌");
         }
@@ -32,15 +39,49 @@ const ResetPassword = () => {
 
         setLoading(true);
         try {
-            await API.put(`/auth/reset-password/${token}`, { password });
-            showSuccess("Password reset successful ✅");
+            const { data } = await API.put("/auth/reset-password", {
+                password,
+                resetToken,
+            });
+            showSuccess(data.msg || "Password reset successful ✅");
             navigate("/login");
         } catch (err) {
-            showError(err.response?.data?.msg || "Reset failed ❌");
+            showError(err.response?.data?.msg || "Password reset failed ❌");
         } finally {
             setLoading(false);
         }
     };
+
+    if (!resetToken) {
+        return (
+            <AuthCard
+                title="Invalid Reset Request"
+                subtitle="No active reset authorization was found."
+                footer={
+                    <button
+                        type="button"
+                        onClick={() => navigate("/forgot-password")}
+                        className="text-yellow-600 dark:text-yellow-400 font-semibold hover:underline"
+                    >
+                        Request a Reset Code
+                    </button>
+                }
+            >
+                <div className="text-center py-4 space-y-4">
+                    <p className="text-sm text-gray-600 dark:text-gray-300">
+                        For security reasons, password resets require completing the email verification step.
+                    </p>
+                    <button
+                        type="button"
+                        onClick={() => navigate("/forgot-password")}
+                        className="qk-btn-primary w-full py-2.5"
+                    >
+                        Go to Forgot Password
+                    </button>
+                </div>
+            </AuthCard>
+        );
+    }
 
     return (
         <AuthCard
@@ -48,7 +89,7 @@ const ResetPassword = () => {
             subtitle="Choose a strong new password for your account"
             footer={
                 <>
-                    Go back to{" "}
+                    Remember your password?{" "}
                     <button
                         type="button"
                         onClick={() => navigate("/login")}
@@ -67,10 +108,11 @@ const ResetPassword = () => {
                     <div className="relative">
                         <input
                             type={showPassword ? "text" : "password"}
-                            placeholder="Enter new password"
+                            placeholder="Enter new password (min 6 characters)"
                             value={password}
                             className={`${inputClass} pr-11`}
                             onChange={(e) => setPassword(e.target.value)}
+                            required
                         />
                         <button
                             type="button"
@@ -94,6 +136,7 @@ const ResetPassword = () => {
                             value={confirmPassword}
                             className={`${inputClass} pr-11`}
                             onChange={(e) => setConfirmPassword(e.target.value)}
+                            required
                         />
                         <button
                             type="button"
@@ -109,7 +152,7 @@ const ResetPassword = () => {
                 <button
                     type="submit"
                     disabled={loading}
-                    className="qk-btn-primary w-full py-3 shadow-md hover:shadow-lg"
+                    className="qk-btn-primary w-full py-3 shadow-md hover:shadow-lg disabled:opacity-60"
                 >
                     {loading ? "Resetting..." : "Reset Password"}
                 </button>

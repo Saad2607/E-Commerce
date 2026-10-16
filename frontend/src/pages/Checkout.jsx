@@ -125,43 +125,63 @@ const Checkout = () => {
     };
 
     return (
-        <PageLayout title="Checkout" subtitle="Review your order and complete payment">
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <PageLayout title="Secure Checkout" subtitle="Review your luxury order and complete payment with Razorpay">
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
                 <div className="lg:col-span-2 space-y-6">
-                    <div className="qk-card p-6">
-                        <h2 className="font-bold text-gray-900 dark:text-white flex items-center gap-2 mb-4">
-                            <FaMapMarkerAlt className="text-yellow-500" />
-                            Shipping Address
-                        </h2>
+                    {/* Shipping Address */}
+                    <div className="qk-card p-6 sm:p-7 border-gray-200 dark:border-gray-800/90 shadow-xl">
+                        <div className="flex items-center gap-2.5 mb-4">
+                            <div className="w-8 h-8 rounded-lg bg-amber-500/15 border border-amber-500/30 flex items-center justify-center text-amber-600 dark:text-amber-400">
+                                <FaMapMarkerAlt size={14} />
+                            </div>
+                            <h2 className="font-extrabold text-gray-900 dark:text-white text-base tracking-tight">
+                                Delivery Address
+                            </h2>
+                        </div>
                         <textarea
-                            placeholder="Enter your full delivery address..."
-                            className="qk-input min-h-[100px] resize-none"
+                            placeholder="Enter your street address, apartment, city, state and PIN code..."
+                            className="qk-input min-h-[110px] resize-none leading-relaxed"
                             value={address}
                             onChange={(e) => setAddress(e.target.value)}
                         />
+                        <p className="text-[11px] text-gray-500 mt-2">
+                            Please ensure your address is accurate to receive timely delivery notifications.
+                        </p>
                     </div>
 
-                    <div className="qk-card p-6">
-                        <h2 className="font-bold text-gray-900 dark:text-white mb-4">Order Items</h2>
+                    {/* Order Items Preview */}
+                    <div className="qk-card p-6 sm:p-7 border-gray-200 dark:border-gray-800/90 shadow-xl">
+                        <div className="flex items-center justify-between mb-4 pb-3 border-b border-gray-200 dark:border-gray-800">
+                            <h2 className="font-extrabold text-gray-900 dark:text-white text-base tracking-tight">
+                                Order Items ({cart.length})
+                            </h2>
+                            <span className="text-xs text-amber-600 dark:text-amber-400 font-mono">
+                                Standard Insured Delivery
+                            </span>
+                        </div>
                         <div className="space-y-3">
                             {cart.map((item) => (
                                 <div
                                     key={item.product?._id}
-                                    className="flex items-center gap-4 p-3 rounded-xl bg-gray-50 dark:bg-gray-700/50"
+                                    className="flex items-center gap-4 p-3.5 rounded-xl bg-gray-50 dark:bg-[#0b0f17]/80 border border-gray-200 dark:border-gray-800/80"
                                 >
-                                    <img
-                                        src={item.product?.images?.[0]}
-                                        alt=""
-                                        className="w-16 h-16 object-cover rounded-lg"
-                                    />
+                                    <div className="w-16 h-16 rounded-lg bg-gradient-to-b from-gray-100 to-gray-200 dark:from-[#161f30]/60 dark:to-[#0b0f17] p-1.5 flex items-center justify-center shrink-0 border border-gray-200 dark:border-gray-800">
+                                        <img
+                                            src={item.product?.images?.[0]}
+                                            alt=""
+                                            className="max-h-full max-w-full object-contain filter drop-shadow"
+                                        />
+                                    </div>
                                     <div className="flex-1 min-w-0">
-                                        <p className="font-medium text-gray-900 dark:text-white truncate">
+                                        <p className="font-bold text-gray-900 dark:text-white text-sm truncate">
                                             {item.product?.name}
                                         </p>
-                                        <p className="text-sm text-gray-500">Qty: {item.qty}</p>
+                                        <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">
+                                            Qty: <span className="font-mono text-gray-900 dark:text-white">{item.qty}</span> · ₹{item.product?.price?.toLocaleString("en-IN")} each
+                                        </p>
                                     </div>
-                                    <p className="font-semibold text-gray-900 dark:text-white">
-                                        ₹{(item.product?.price ?? 0) * item.qty}
+                                    <p className="font-extrabold text-gray-900 dark:text-white text-base gold-gradient-text shrink-0">
+                                        ₹{((item.product?.price ?? 0) * item.qty).toLocaleString("en-IN")}
                                     </p>
                                 </div>
                             ))}
@@ -169,35 +189,54 @@ const Checkout = () => {
                     </div>
                 </div>
 
-                <div className="qk-card p-6 h-fit sticky top-24">
-                    <h2 className="font-bold text-gray-900 dark:text-white mb-4">Order Summary</h2>
-                    <div className="space-y-2 text-sm">
+                {/* Checkout Summary Card */}
+                <div className="qk-card p-6 sm:p-7 sticky top-24 border-gray-200 dark:border-amber-500/30 shadow-2xl">
+                    <div className="flex items-center gap-2 mb-5">
+                        <span className="w-1.5 h-5 rounded-full bg-gradient-to-b from-amber-400 to-amber-600 shadow-[0_0_8px_rgba(245,158,11,0.6)]" />
+                        <h2 className="font-extrabold text-gray-900 dark:text-white text-base tracking-tight">
+                            Payment Breakdown
+                        </h2>
+                    </div>
+
+                    <div className="space-y-3 text-sm pb-5 border-b border-gray-200 dark:border-gray-800">
                         <div className="flex justify-between text-gray-600 dark:text-gray-400">
-                            <span>Items</span>
-                            <span>{cart.length}</span>
+                            <span>Item Subtotal</span>
+                            <span className="font-mono text-gray-900 dark:text-white">₹{totalPrice.toLocaleString("en-IN")}</span>
                         </div>
                         <div className="flex justify-between text-gray-600 dark:text-gray-400">
-                            <span>Subtotal</span>
-                            <span>₹{totalPrice}</span>
+                            <span>Shipping & Handling</span>
+                            <span className="text-emerald-600 dark:text-emerald-400 font-bold uppercase text-xs">Free</span>
                         </div>
-                        <div className="border-t border-gray-200 dark:border-gray-600 pt-3 flex justify-between">
-                            <span className="font-bold text-gray-900 dark:text-white">Total</span>
-                            <span className="text-xl font-bold text-gray-900 dark:text-white">
-                                ₹{totalPrice}
-                            </span>
+                        <div className="flex justify-between text-gray-600 dark:text-gray-400">
+                            <span>GST / Taxes</span>
+                            <span className="text-gray-500 dark:text-gray-400 text-xs">Inclusive</span>
                         </div>
+                    </div>
+
+                    <div className="pt-4 pb-6 flex items-baseline justify-between">
+                        <span className="font-bold text-gray-900 dark:text-white text-base">Total Due</span>
+                        <span className="text-2xl font-black gold-gradient-text">
+                            ₹{totalPrice.toLocaleString("en-IN")}
+                        </span>
                     </div>
 
                     <button
                         onClick={placeOrder}
                         disabled={loading || cart.length === 0}
-                        className="qk-btn-primary w-full py-3 mt-6 flex items-center justify-center gap-2"
+                        className="qk-btn-primary w-full py-3.5 text-xs uppercase tracking-wider font-extrabold flex items-center justify-center gap-2 shadow-lg disabled:opacity-50"
                     >
-                        <FaCreditCard />
-                        {loading ? "Processing..." : "Pay with Razorpay"}
+                        <FaCreditCard size={14} />
+                        {loading ? "Initializing Razorpay..." : "Pay with Razorpay"}
                     </button>
 
-                    <p className="text-xs text-gray-400 text-center mt-3">Secured by Razorpay</p>
+                    <div className="mt-4 pt-4 border-t border-gray-200 dark:border-gray-800/80 text-center space-y-1">
+                        <p className="text-[11px] text-gray-500 dark:text-gray-400 font-medium">
+                            🔒 100% Secure Transaction via Razorpay
+                        </p>
+                        <p className="text-[10px] text-gray-400 dark:text-gray-500 font-mono">
+                            Cards · UPI · Net Banking · Wallets
+                        </p>
+                    </div>
                 </div>
             </div>
         </PageLayout>

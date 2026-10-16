@@ -26,11 +26,18 @@ const Register = () => {
 
         setLoading(true);
         try {
-            await API.post("/auth/register", form);
-            showSuccess("Registered Successfully 🎉");
-            navigate("/login");
+            const { data } = await API.post("/auth/register", form);
+            showSuccess(data.msg || "Verification code sent to your email! 📩");
+            navigate("/verify-email", {
+                state: { email: form.email, purpose: "register" },
+            });
         } catch (err) {
-            showError(err.response?.data?.msg || "Error registering ❌");
+            const msg = err.response?.data?.msg || "Error registering ❌";
+            showError(msg);
+            // If user already registered but unverified, redirect them to verify
+            if (err.response?.data?.canRetry && err.response?.data?.email) {
+                navigate("/verify-email", { state: { email: err.response.data.email } });
+            }
         } finally {
             setLoading(false);
         }
@@ -63,6 +70,7 @@ const Register = () => {
                         value={form.name}
                         className={inputClass}
                         onChange={(e) => setForm({ ...form, name: e.target.value })}
+                        required
                     />
                 </div>
 
@@ -76,6 +84,7 @@ const Register = () => {
                         value={form.email}
                         className={inputClass}
                         onChange={(e) => setForm({ ...form, email: e.target.value })}
+                        required
                     />
                 </div>
 
@@ -86,10 +95,11 @@ const Register = () => {
                     <div className="relative">
                         <input
                             type={showPassword ? "text" : "password"}
-                            placeholder="Create a password"
+                            placeholder="Create a password (min 6 characters)"
                             value={form.password}
                             className={`${inputClass} pr-11`}
                             onChange={(e) => setForm({ ...form, password: e.target.value })}
+                            required
                         />
                         <button
                             type="button"
@@ -105,7 +115,7 @@ const Register = () => {
                 <button
                     type="submit"
                     disabled={loading}
-                    className="qk-btn-primary w-full py-3 shadow-md hover:shadow-lg mt-2"
+                    className="qk-btn-primary w-full py-3 shadow-md hover:shadow-lg mt-2 disabled:opacity-60"
                 >
                     {loading ? "Creating account..." : "Register"}
                 </button>

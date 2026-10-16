@@ -9,6 +9,10 @@ export const ProtectedRoute = ({ children }) => {
         return <Navigate to="/login" state={{ from: location.pathname }} replace />;
     }
 
+    if (user.isVerified === false) {
+        return <Navigate to={`/verify-email?email=${encodeURIComponent(user.email || "")}`} replace />;
+    }
+
     return children;
 };
 
@@ -18,6 +22,10 @@ export const AdminRoute = ({ children }) => {
 
     if (!user) {
         return <Navigate to="/login" state={{ from: location.pathname }} replace />;
+    }
+
+    if (user.isVerified === false) {
+        return <Navigate to={`/verify-email?email=${encodeURIComponent(user.email || "")}`} replace />;
     }
 
     if (!user.isAdmin) {

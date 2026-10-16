@@ -21,32 +21,58 @@ API.interceptors.request.use((req) => {
         req.headers.Authorization = `Bearer ${user.token}`;
     }
 
-    requestCount++;
-    if (setLoadingGlobal) setLoadingGlobal(true);
+    // Do not trigger full-screen blocking loader for silent background requests
+    if (!req.silent) {
+        requestCount++;
+        if (setLoadingGlobal) setLoadingGlobal(true);
+    }
 
     return req;
 });
 
 API.interceptors.response.use(
     (res) => {
-        requestCount--;
-        if (requestCount === 0 && setLoadingGlobal) {
-            setLoadingGlobal(false);
+        if (!res.config?.silent) {
+            requestCount = Math.max(0, requestCount - 1);
+            if (requestCount === 0 && setLoadingGlobal) {
+                setLoadingGlobal(false);
+            }
         }
         return res;
     },
     (err) => {
-        requestCount--;
-        if (requestCount === 0 && setLoadingGlobal) {
-            setLoadingGlobal(false);
+        if (!err.config?.silent) {
+            requestCount = Math.max(0, requestCount - 1);
+            if (requestCount === 0 && setLoadingGlobal) {
+                setLoadingGlobal(false);
+            }
         }
 
+        const isAuthPage = [
+            "/login",
+            "/register",
+            "/forgot-password",
+            "/verify-email",
+            "/verify-reset-otp",
+            "/reset-password",
+        ].some((path) => window.location.pathname.startsWith(path));
+
+        // Handle unverified account response (403 requiresVerification)
+        if (err.response?.status === 403 && err.response?.data?.requiresVerification) {
+            const emailParam = err.response.data.email
+                ? `?email=${encodeURIComponent(err.response.data.email)}`
+                : "";
+            if (!window.location.pathname.startsWith("/verify-email") && !err.config?.silent) {
+                window.location.href = `/verify-email${emailParam}`;
+            }
+            return Promise.reject(err);
+        }
+
+        // Handle expired/invalid session (401)
         if (err.response?.status === 401) {
             store.dispatch(logout());
-            const isAuthPage = ["/login", "/register", "/forgot-password"].some(
-                (path) => window.location.pathname.startsWith(path)
-            );
-            if (!isAuthPage) {
+            // Only redirect if it's an explicit user action and not a silent background poll
+            if (!isAuthPage && !err.config?.silent && !window.location.search.includes("session=expired")) {
                 window.location.href = "/login?session=expired";
             }
         }
